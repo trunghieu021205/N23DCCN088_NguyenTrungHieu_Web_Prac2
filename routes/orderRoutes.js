@@ -32,6 +32,23 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { customerName, customerEmail, items, totalAmount } = req.body;
+
+    if (!Array.isArray(items) || items.length === 0) {
+      return errorResponse(res, "Danh sách items không được rỗng", 400);
+    }
+
+    const calculatedTotal = items.reduce((sum, item) => {
+      return sum + (Number(item.quantity) * Number(item.unitPrice));
+    }, 0);
+
+    if (calculatedTotal !== Number(totalAmount)) {
+      return errorResponse(
+        res,
+        `totalAmount không chính xác. Giá trị tính được: ${calculatedTotal}`,
+        400
+      );
+    }
+
     const order = new Order({
       customerName,
       customerEmail,
@@ -40,9 +57,16 @@ router.post('/', async (req, res) => {
     });
 
     const newOrder = await order.save();
+
     return successResponse(res, newOrder, "Tạo đơn hàng mới thành công", 201);
+
   } catch (err) {
-    return errorResponse(res, "Lỗi khi tạo đơn hàng", 400, err);
+    if (err.name === 'ValidationError') {
+      const errors = Object.values(err.errors).map(e => e.message);
+      return errorResponse(res, errors, 400);
+    }
+
+    return errorResponse(res, "Lỗi khi tạo đơn hàng", 500, err);
   }
 });
 

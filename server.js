@@ -7,7 +7,10 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
+const morgan = require('morgan');
 
+// dùng middleware morgan
+app.use(morgan('dev'));
 // Middleware
 app.use(cors());
 app.use(express.json()); // Cho phép server đọc JSON từ request body

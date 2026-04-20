@@ -38,7 +38,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"customerName\": \"Nguyen Van B\",\r\n    \"customerEmail\": \"vana@email.com\",\r\n    \"items\": [\r\n        { \"productName\": \"Laptop Dell XPS\", \"quantity\": 2, \"unitPrice\":\r\n        25000000 },\r\n        { \"productName\": \"Chuot Logitech\", \"quantity\": 3, \"unitPrice\":\r\n        500000 }\r\n    ],\r\n    \"totalAmount\": 56000000\r\n}",
+          "raw": "{\r\n    \"customerName\": \"Nguyen Van B\",\r\n    \"customerEmail\": \"vana@email.com\",\r\n    \"items\": [\r\n        { \"productName\": \"Laptop Dell XPS\", \"quantity\": 2, \"unitPrice\":\r\n        25000000 },\r\n        { \"productName\": \"Chuot Logitech\", \"quantity\": 3, \"unitPrice\":\r\n        500000 }\r\n    ],\r\n    \"totalAmount\": 51500000\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -46,12 +46,11 @@
           }
         },
         "url": {
-          "raw": "http://localhost:5000/api/orders",
+          "raw": "http://{{basic_url}}/api/orders",
           "protocol": "http",
           "host": [
-            "localhost"
+            "{{basic_url}}"
           ],
-          "port": "5000",
           "path": [
             "api",
             "orders"
@@ -66,12 +65,11 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:5000/api/orders",
+          "raw": "http://{{basic_url}}/api/orders",
           "protocol": "http",
           "host": [
-            "localhost"
+            "{{basic_url}}"
           ],
-          "port": "5000",
           "path": [
             "api",
             "orders"
@@ -86,12 +84,11 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:5000/api/orders?status=pending",
+          "raw": "http://{{basic_url}}/api/orders?status=pending",
           "protocol": "http",
           "host": [
-            "localhost"
+            "{{basic_url}}"
           ],
-          "port": "5000",
           "path": [
             "api",
             "orders"
@@ -112,12 +109,11 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:5000/api/orders?status=pending&sort=asc",
+          "raw": "http://{{basic_url}}/api/orders?status=pending&sort=asc",
           "protocol": "http",
           "host": [
-            "localhost"
+            "{{basic_url}}"
           ],
-          "port": "5000",
           "path": [
             "api",
             "orders"
@@ -142,12 +138,11 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:5000/api/orders/{{order_id}}",
+          "raw": "http://{{basic_url}}/api/orders/{{order_id}}",
           "protocol": "http",
           "host": [
-            "localhost"
+            "{{basic_url}}"
           ],
-          "port": "5000",
           "path": [
             "api",
             "orders",
@@ -172,12 +167,11 @@
           }
         },
         "url": {
-          "raw": "http://localhost:5000/api/orders/{{order_id}}",
+          "raw": "http://{{basic_url}}/api/orders/{{order_id}}",
           "protocol": "http",
           "host": [
-            "localhost"
+            "{{basic_url}}"
           ],
-          "port": "5000",
           "path": [
             "api",
             "orders",
@@ -193,12 +187,11 @@
         "method": "DELETE",
         "header": [],
         "url": {
-          "raw": "http://localhost:5000/api/orders/{{order_id}}",
+          "raw": "http://{{basic_url}}/api/orders/{{order_id}}",
           "protocol": "http",
           "host": [
-            "localhost"
+            "{{basic_url}}"
           ],
-          "port": "5000",
           "path": [
             "api",
             "orders",
@@ -214,12 +207,11 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:5000/api/orders/search?name=Nguyen Van A",
+          "raw": "http://{{basic_url}}/api/orders/search?name=Nguyen Van B",
           "protocol": "http",
           "host": [
-            "localhost"
+            "{{basic_url}}"
           ],
-          "port": "5000",
           "path": [
             "api",
             "orders",
@@ -228,7 +220,7 @@
           "query": [
             {
               "key": "name",
-              "value": "Nguyen Van A"
+              "value": "Nguyen Van B"
             }
           ]
         }

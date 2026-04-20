@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
+const { successResponse, errorResponse } = require('../middleware/responseHandler');
 
-// 1. Lấy toàn bộ đơn hàng (GET /api/orders)
+// 1. Lấy tất cả đơn hàng (GET /api/orders)
 router.get('/', async (req, res) => {
   try {
     const orders = await Order.find().sort({ createdAt: -1 });
-    res.json(orders);
+    return successResponse(res, orders, "Lấy danh sách đơn hàng thành công");
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return errorResponse(res, "Lỗi khi lấy danh sách đơn hàng", 500, err);
   }
 });
 
@@ -16,29 +17,32 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
+    
     if (!order) {
-      return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+      return errorResponse(res, "Không tìm thấy đơn hàng", 404);
     }
-    res.json(order);
+
+    return successResponse(res, order, "Lấy thông tin đơn hàng thành công");
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return errorResponse(res, "Lỗi khi lấy đơn hàng theo ID", 500, err);
   }
 });
 
 // 3. Tạo đơn hàng mới (POST /api/orders)
 router.post('/', async (req, res) => {
-  const order = new Order({
-    customerName: req.body.customerName,
-    customerEmail: req.body.customerEmail,
-    items: req.body.items,
-    totalAmount: req.body.totalAmount
-  });
-
   try {
+    const { customerName, customerEmail, items, totalAmount } = req.body;
+    const order = new Order({
+      customerName,
+      customerEmail,
+      items,
+      totalAmount
+    });
+
     const newOrder = await order.save();
-    res.status(201).json(newOrder);
+    return successResponse(res, newOrder, "Tạo đơn hàng mới thành công", 201);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    return errorResponse(res, "Lỗi khi tạo đơn hàng", 400, err);
   }
 });
 
@@ -52,12 +56,12 @@ router.put('/:id', async (req, res) => {
     );
 
     if (!updatedOrder) {
-      return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+      return errorResponse(res, "Không tìm thấy đơn hàng để cập nhật", 404);
     }
 
-    res.json(updatedOrder);
+    return successResponse(res, updatedOrder, "Cập nhật đơn hàng thành công");
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    return errorResponse(res, "Lỗi khi cập nhật đơn hàng", 400, err);
   }
 });
 
@@ -67,12 +71,12 @@ router.delete('/:id', async (req, res) => {
     const deleted = await Order.findByIdAndDelete(req.params.id);
 
     if (!deleted) {
-      return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+      return errorResponse(res, "Không tìm thấy đơn hàng để xóa", 404);
     }
 
-    res.json({ message: 'Đã xóa đơn hàng thành công!' });
+    return successResponse(res, null, "Xóa đơn hàng thành công");
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return errorResponse(res, "Lỗi khi xóa đơn hàng", 500, err);
   }
 });
 

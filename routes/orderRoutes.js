@@ -5,8 +5,13 @@ const { successResponse, errorResponse } = require('../middleware/responseHandle
 
 // 1. Lấy tất cả đơn hàng (GET /api/orders)
 router.get('/', async (req, res) => {
+  const filter = {};
+  // nếu có query status thì thêm vào filter
+  if (req.query.status) {
+    filter.status = req.query.status;
+  }
   try {
-    const orders = await Order.find().sort({ createdAt: -1 });
+    const orders = await Order.find(filter).sort({ createdAt: -1 });
     return successResponse(res, orders, "Lấy danh sách đơn hàng thành công");
   } catch (err) {
     return errorResponse(res, "Lỗi khi lấy danh sách đơn hàng", 500, err);

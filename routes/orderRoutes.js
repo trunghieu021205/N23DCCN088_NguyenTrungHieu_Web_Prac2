@@ -5,24 +5,47 @@ const { successResponse, errorResponse } = require('../middleware/responseHandle
 
 // 1. Lấy tất cả đơn hàng (GET /api/orders)
 router.get('/', async (req, res) => {
-    const { status, sort } = req.query;
-    const filter = {};
-    // nếu có query status thì thêm vào filter
-    if (req.query.status) {
-        filter.status = req.query.status;
-    }
-    let sortOption = { createdAt: -1 }; 
-    if (sort === 'asc') {
-        sortOption = { totalAmount: 1 };
-    } else if (sort === 'desc') {
-        sortOption = { totalAmount: -1 };
-    }
-    try {
-        const orders = await Order.find(filter).sort(sortOption);
-        return successResponse(res, orders, "Lấy danh sách đơn hàng thành công");
-        } catch (err) {
-        return errorResponse(res, "Lỗi khi lấy danh sách đơn hàng", 500, err);
-    }
+  const { status, sort } = req.query;
+  const allowedStatus = ['pending','confirmed', 'shipped', 'delivered', 'cancelled'];
+  const allowedSort = ['asc', 'desc'];
+  const filter = {};
+  // validate status
+  if (status) {
+      if (!allowedStatus.includes(status)) {
+          return errorResponse(
+              res,
+              `status không hợp lệ. Giá trị hợp lệ: ${allowedStatus.join(', ')}`,
+              400
+          );
+      }
+      filter.status = status;
+  }
+
+  // validate sort
+  if (sort && !allowedSort.includes(sort)) {
+      return errorResponse(
+          res,
+          `sort không hợp lệ. Chỉ chấp nhận: asc | desc`,
+          400
+      );
+  }
+  // nếu có query status thì thêm vào filter
+  if (req.query.status) {
+      filter.status = req.query.status;
+}
+
+  let sortOption = { createdAt: -1 }; 
+  if (sort === 'asc') {
+      sortOption = { totalAmount: 1 };
+  } else if (sort === 'desc') {
+      sortOption = { totalAmount: -1 };
+  }
+  try {
+      const orders = await Order.find(filter).sort(sortOption);
+      return successResponse(res, orders, "Lấy danh sách đơn hàng thành công");
+      } catch (err) {
+      return errorResponse(res, "Lỗi khi lấy danh sách đơn hàng", 500, err);
+  }
 });
 
 // 2. Tìm kiếm theo tên khách hàng (GET /api/orders/search?name=...)

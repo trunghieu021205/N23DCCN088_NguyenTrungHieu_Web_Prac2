@@ -5,36 +5,42 @@ const { successResponse, errorResponse } = require('../middleware/responseHandle
 
 // 1. Lấy tất cả đơn hàng (GET /api/orders)
 router.get('/', async (req, res) => {
-  const filter = {};
-  // nếu có query status thì thêm vào filter
-  if (req.query.status) {
-    filter.status = req.query.status;
-  }
-  try {
-    const orders = await Order.find(filter).sort({ createdAt: -1 });
-    return successResponse(res, orders, "Lấy danh sách đơn hàng thành công");
-  } catch (err) {
-    return errorResponse(res, "Lỗi khi lấy danh sách đơn hàng", 500, err);
-  }
+    const { status, sort } = req.query;
+    const filter = {};
+    // nếu có query status thì thêm vào filter
+    if (req.query.status) {
+        filter.status = req.query.status;
+    }
+    let sortOption = { createdAt: -1 }; 
+    if (sort === 'asc') {
+        sortOption = { totalAmount: 1 };
+    } else if (sort === 'desc') {
+        sortOption = { totalAmount: -1 };
+    }
+    try {
+        const orders = await Order.find(filter).sort(sortOption);
+        return successResponse(res, orders, "Lấy danh sách đơn hàng thành công");
+        } catch (err) {
+        return errorResponse(res, "Lỗi khi lấy danh sách đơn hàng", 500, err);
+    }
 });
 
 // 2. Tìm kiếm theo tên khách hàng (GET /api/orders/search?name=...)
 router.get('/search', async (req, res) => {
-  try {
-    const name = req.query.name;
+    try {
+        const name = req.query.name;
+        if (!name) {
+            return errorResponse(res, "Vui lòng nhập tên cần tìm", 400);
+        }
 
-    if (!name) {
-      return errorResponse(res, "Vui lòng nhập tên cần tìm", 400);
+        const orders = await Order.find({
+            customerName: { $regex: name, $options: 'i' }
+            }).sort({ createdAt: -1 });
+
+        return successResponse(res, orders, "Tìm kiếm đơn hàng thành công");
+        } catch (err) {
+        return errorResponse(res, "Lỗi khi tìm kiếm đơn hàng", 500, err);
     }
-
-    const orders = await Order.find({
-      customerName: { $regex: name, $options: 'i' }
-    }).sort({ createdAt: -1 });
-
-    return successResponse(res, orders, "Tìm kiếm đơn hàng thành công");
-  } catch (err) {
-    return errorResponse(res, "Lỗi khi tìm kiếm đơn hàng", 500, err);
-  }
 });
 
 // 3. Lấy đơn hàng theo ID (GET /api/orders/:id)

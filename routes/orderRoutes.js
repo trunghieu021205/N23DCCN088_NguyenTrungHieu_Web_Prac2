@@ -65,6 +65,16 @@ router.post('/', async (req, res) => {
 
     if (!Array.isArray(items) || items.length === 0) {
       return errorResponse(res, "Danh sách items không được rỗng", 400);
+      }
+      
+    for (const item of items) {
+        if (item.quantity == null || item.quantity <= 0) {
+            return errorResponse(res, "Số lượng (quantity) phải > 0", 400);
+        }
+
+        if (item.unitPrice == null || item.unitPrice < 0) {
+            return errorResponse(res, "Giá (unitPrice) không được âm", 400);
+        }
     }
 
     const calculatedTotal = items.reduce((sum, item) => {

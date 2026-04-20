@@ -28,7 +28,20 @@ mongoose.connect(process.env.MONGO_URI)
 app.get('/', (req, res) => {
   res.send('API Quản lý Đơn hàng đang hoạt động...');
 });
+// Route kiểm tra kết nối DB
+app.get("/test-db", async (req, res) => {
+  try {
+    if (!mongoose.connection.db) {
+      return res.status(500).json({ message: "DB not connected yet" });
+    }
 
+    const result = await mongoose.connection.db.admin().ping();
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err.message);
+  }
+});
 // Khởi chạy server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

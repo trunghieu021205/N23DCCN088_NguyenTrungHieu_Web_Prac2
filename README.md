@@ -10,6 +10,14 @@ Dự án xây dựng RESTful API quản lý đơn hàng sử dụng **Node.js, E
 Hệ thống hỗ trợ đầy đủ CRUD và các chức năng nâng cao như **validation, filter, search, sort và logging**.
 
 ---
+## 🌐 Live Demo
+
+🔗 API đã deploy tại:
+https://order-management-dnb6.onrender.com/
+
+📌 Ví dụ:
+https://order-management-dnb6.onrender.com/api/orders
+---
 
 ## 👨‍🎓 Thông tin sinh viên
 

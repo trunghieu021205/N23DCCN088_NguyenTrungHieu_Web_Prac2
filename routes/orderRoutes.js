@@ -18,7 +18,26 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 2. Lấy đơn hàng theo ID (GET /api/orders/:id)
+// 2. Tìm kiếm theo tên khách hàng (GET /api/orders/search?name=...)
+router.get('/search', async (req, res) => {
+  try {
+    const name = req.query.name;
+
+    if (!name) {
+      return errorResponse(res, "Vui lòng nhập tên cần tìm", 400);
+    }
+
+    const orders = await Order.find({
+      customerName: { $regex: name, $options: 'i' }
+    }).sort({ createdAt: -1 });
+
+    return successResponse(res, orders, "Tìm kiếm đơn hàng thành công");
+  } catch (err) {
+    return errorResponse(res, "Lỗi khi tìm kiếm đơn hàng", 500, err);
+  }
+});
+
+// 3. Lấy đơn hàng theo ID (GET /api/orders/:id)
 router.get('/:id', async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -33,7 +52,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// 3. Tạo đơn hàng mới (POST /api/orders)
+// 4. Tạo đơn hàng mới (POST /api/orders)
 router.post('/', async (req, res) => {
   try {
     const { customerName, customerEmail, items, totalAmount } = req.body;
@@ -75,7 +94,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// 4. Cập nhật đơn hàng (PUT /api/orders/:id)
+// 5. Cập nhật đơn hàng (PUT /api/orders/:id)
 router.put('/:id', async (req, res) => {
   try {
     const updatedOrder = await Order.findByIdAndUpdate(
@@ -94,7 +113,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// 5. Xóa đơn hàng (DELETE /api/orders/:id)
+// 6. Xóa đơn hàng (DELETE /api/orders/:id)
 router.delete('/:id', async (req, res) => {
   try {
     const deleted = await Order.findByIdAndDelete(req.params.id);
